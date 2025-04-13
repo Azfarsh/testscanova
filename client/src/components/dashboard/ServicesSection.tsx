@@ -1,99 +1,124 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  FaLungs,
-  FaNotesMedical,
-  FaBrain,
-  FaVial,
-  FaXRay,
-  FaHeartbeat,
-} from "react-icons/fa";
+import { Brain, FileText, Microscope, Lungs } from "lucide-react";
 import { Link } from "wouter";
+import { Service } from "@/types/inputs";
 
-const services = [
+const services: Service[] = [
   {
-    icon: <FaNotesMedical size={20} />,
+    id: "skin-cancer",
     title: "Skin Cancer Detection",
+    icon: <Microscope className="w-6 h-6" />,
     description: "Upload skin images for instant AI analysis",
-    link: "#",
-    image: "/images/skin-cancer.jpg", // Placeholder image path
-    name: "Skin Cancer Detection",
-    inputType: "Image Upload",
+    input: {
+      type: "file",
+      fileConfig: {
+        accept: "image/jpeg,image/png",
+        multiple: false,
+        maxSize: 10
+      }
+    }
   },
   {
-    icon: <FaHeartbeat size={20} />,
+    id: "breast-cancer",
     title: "Breast Cancer Screening",
+    icon: <Microscope className="w-6 h-6" />,
     description: "Analyze mammogram images with AI",
-    link: "#",
-    image: "/images/breast-cancer.jpg", // Placeholder image path
-    name: "Breast Cancer Screening",
-    inputType: "Image Upload",
+    input: {
+      type: "file",
+      fileConfig: {
+        accept: "image/jpeg,image/png,image/dicom",
+        multiple: false,
+        maxSize: 50
+      }
+    }
   },
   {
-    icon: <FaLungs size={20} />,
+    id: "lung-cancer",
     title: "Lung Cancer Detection",
+    icon: <Lungs className="w-6 h-6" />,
     description: "CT scan and X-ray analysis",
-    link: "#",
-    image: "/images/lung-cancer.jpg", // Placeholder image path
-    name: "Lung Cancer Detection",
-    inputType: "Image Upload",
+    input: {
+      type: "file",
+      fileConfig: {
+        accept: "image/jpeg,image/png,image/dicom",
+        multiple: true,
+        maxSize: 100
+      }
+    }
   },
   {
-    icon: <FaXRay size={20} />,
+    id: "tuberculosis",
     title: "Tuberculosis Screening",
+    icon: <Lungs className="w-6 h-6" />,
     description: "X-ray and CT scan analysis",
-    link: "#",
-    image: "/images/tuberculosis.jpg", // Placeholder image path
-    name: "Tuberculosis Screening",
-    inputType: "Image Upload",
+    input: {
+      type: "file",
+      fileConfig: {
+        accept: "image/jpeg,image/png,image/dicom",
+        multiple: false,
+        maxSize: 50
+      }
+    }
   },
   {
-    icon: <FaBrain size={24} />,
+    id: "parkinsons",
     title: "Parkinson's Detection",
+    icon: <Brain className="w-6 h-6" />,
     description: "Voice recording analysis",
-    link: "/parkinson-recorder",
-    image: "/images/parkinsons.jpg", // Placeholder image path
-    name: "Parkinson's Detection",
-    inputType: "Voice Recording",
+    input: {
+      type: "audio",
+      audioConfig: {
+        maxDuration: 30,
+        sampleRate: 44100,
+        channels: 1
+      }
+    }
   },
   {
-    icon: <FaVial size={20} />,
+    id: "medical-records",
     title: "Medical Records",
+    icon: <FileText className="w-6 h-6" />,
     description: "Store and manage your health records",
-    link: "#",
-    image: "/images/medical-records.jpg", // Placeholder image path
-    name: "Medical Records",
-    inputType: "Document Upload",
-  },
+    input: {
+      type: "file",
+      fileConfig: {
+        accept: ".pdf,.doc,.docx,.jpg,.png",
+        multiple: true,
+        maxSize: 25
+      }
+    }
+  }
 ];
 
 const ServicesSection = () => {
   return (
     <section className="mt-16 px-4 md:px-12 lg:px-20">
       <h2 className="text-3xl font-bold mb-10 text-gray-800 text-center">
-        Our Services
+        Available Services
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        {services.map((service, index) => (
-          <div key={index} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all hover:scale-102">
+        {services.map((service) => (
+          <div key={service.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all hover:scale-102">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center mr-4">
                 {service.icon}
               </div>
-              <h3 className="text-xl font-semibold text-gray-800">{service.name}</h3>
+              <h3 className="text-xl font-semibold text-gray-800">{service.title}</h3>
             </div>
-            <p className="text-gray-600 mb-4 min-h-[3rem]">{service.description}</p>
+            <p className="text-gray-600 mb-4">{service.description}</p>
             <div className="flex items-center text-sm text-gray-500 mb-4">
-              <i className={`fas fa-${service.inputType === 'Image Upload' ? 'camera' : service.inputType === 'Voice Recording' ? 'microphone' : 'file-upload'} mr-2`}></i>
-              <span>Input Type: {service.inputType}</span>
+              <i className={`fas fa-${service.input.type === 'file' ? 'file-upload' : 'microphone'} mr-2`}></i>
+              <span>Input Type: {service.input.type === 'file' ? 
+                `Files (${service.input.fileConfig?.accept})` : 
+                'Audio Recording'}</span>
             </div>
-            <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white">
-              <i className={`fas fa-${service.icon.type.name === 'FaLungs' ? 'lungs' : 
-                service.icon.type.name === 'FaBrain' ? 'brain' : 
-                service.icon.type.name === 'FaHeartbeat' ? 'heartbeat' : 
-                'stethoscope'} mr-2`}></i>
-              Start Screening
-            </Button>
+            <Link href={`/service/${service.id}`}>
+              <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white">
+                Start Screening
+              </Button>
+            </Link>
           </div>
         ))}
       </div>
