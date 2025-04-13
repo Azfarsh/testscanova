@@ -1,0 +1,27 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // User profile data
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Login tracking
+    match /login/{loginId} {
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || request.auth.token.admin == true);
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Signup tracking  
+    match /signup/{signupId} {
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || request.auth.token.admin == true);
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+    }
+  }
+}

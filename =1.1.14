@@ -1,0 +1,25 @@
+Defaulting to user installation because normal site-packages is not writeable
+Collecting image
+  Using cached image-1.5.33.tar.gz (15 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting ibm_watsonx_ai
+  Using cached ibm_watsonx_ai-1.1.16-py3-none-any.whl.metadata (6.6 kB)
+Collecting pillow (from image)
+  Using cached pillow-11.1.0-cp313-cp313-win_amd64.whl.metadata (9.3 kB)
+Collecting django (from image)
+  Using cached Django-5.2-py3-none-any.whl.metadata (4.1 kB)
+Collecting six (from image)
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Requirement already satisfied: requests in c:\users\prasa\appdata\roaming\python\python313\site-packages (from ibm_watsonx_ai) (2.32.3)
+Collecting httpx (from ibm_watsonx_ai)
+  Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Requirement already satisfied: urllib3 in c:\users\prasa\appdata\roaming\python\python313\site-packages (from ibm_watsonx_ai) (2.3.0)
+Collecting pandas<2.2.0,>=0.24.2 (from ibm_watsonx_ai)
+  Using cached pandas-2.1.4.tar.gz (4.3 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'error'

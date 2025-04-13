@@ -1,0 +1,7 @@
+{
+  "typeCheckingMode": "basic",
+  "reportMissingImports": false,
+  "extraPaths": [
+    "C:/Users/prasa/AppData/Roaming/Python/Python311/site-packages"
+  ]
+}
