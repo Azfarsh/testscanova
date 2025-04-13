@@ -69,13 +69,15 @@ const LoginModal = ({ onClose, openSignup }: LoginModalProps) => {
   const onSubmit = async (data: FormValues) => {
     try {
       setIsLoading(true);
-      await auth.signInWithEmailAndPassword(data.email, data.password);
+      const userCredential = await auth.signInWithEmailAndPassword(data.email, data.password);
       
       // Store login data in Firestore
-      await addDoc(collection(db, 'logins'), {
+      await addDoc(collection(db, 'login'), {
+        userId: userCredential.user.uid,
         email: data.email,
         timestamp: serverTimestamp(),
-        rememberMe: data.rememberMe
+        rememberMe: data.rememberMe,
+        method: 'email'
       });
 
       toast({

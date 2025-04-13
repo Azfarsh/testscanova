@@ -4,6 +4,20 @@ import { User } from 'firebase/auth';
 import { doc, updateDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
+
+// Add profile update function
+const updateProfile = async (userId: string, profileData: any) => {
+  try {
+    await addDoc(collection(db, 'profile'), {
+      userId,
+      ...profileData,
+      timestamp: serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
+};
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
