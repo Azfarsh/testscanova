@@ -68,9 +68,10 @@ const SignupModal = ({ onClose, openLogin }: SignupModalProps) => {
 
       toast({
         title: "Account created",
-        description: "Welcome to Scanova!",
+        description: "Please login to continue",
       });
       onClose();
+      openLogin();
     } catch (err: any) {
       console.error(err);
       toast({

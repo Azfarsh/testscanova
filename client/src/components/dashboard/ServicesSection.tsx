@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Brain, FileText, Microscope, Lungs } from "lucide-react";
+import { Brain, FileText, Microscope, Lung } from "lucide-react";
 import { Link } from "wouter";
 import { Service } from "@/types/inputs";
 
@@ -37,7 +36,7 @@ const services: Service[] = [
   {
     id: "lung-cancer",
     title: "Lung Cancer Detection",
-    icon: <Lungs className="w-6 h-6" />,
+    icon: <Lung className="w-6 h-6" />,
     description: "CT scan and X-ray analysis",
     input: {
       type: "file",
@@ -51,7 +50,7 @@ const services: Service[] = [
   {
     id: "tuberculosis",
     title: "Tuberculosis Screening",
-    icon: <Lungs className="w-6 h-6" />,
+    icon: <Lung className="w-6 h-6" />,
     description: "X-ray and CT scan analysis",
     input: {
       type: "file",
