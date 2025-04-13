@@ -79,8 +79,7 @@ const Navbar = ({ toggleMobileMenu, openLoginModal, openSignupModal }: NavbarPro
             {navLinks.map((link) => (
               <Link 
                 key={link.href} 
-                href={link.href} 
-                onClick={() => setLocation(link.href)}
+                href={link.href}
                 className={`text-gray-700 hover:text-cyan-600 transition duration-200 py-2 ${location === link.href ? 'text-cyan-600 font-medium' : ''}`}
               >
                 {link.label}

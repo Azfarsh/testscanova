@@ -57,13 +57,23 @@ const SignupModal = ({ onClose, openLogin }: SignupModalProps) => {
     try {
       const userCredential = await register(data.email, data.password, `${data.firstName} ${data.lastName}`);
       
-      // Store signup data in Firestore
-      await addDoc(collection(db, 'signup'), {
-        userId: userCredential.user.uid,
+      // Store user data in Firestore
+      await addDoc(collection(db, 'users'), {
+        uid: userCredential.user.uid,
         email: data.email,
         firstName: data.firstName,
         lastName: data.lastName,
-        timestamp: serverTimestamp()
+        displayName: `${data.firstName} ${data.lastName}`,
+        createdAt: serverTimestamp(),
+        lastLogin: serverTimestamp()
+      });
+
+      // Store signup event
+      await addDoc(collection(db, 'signup_events'), {
+        userId: userCredential.user.uid,
+        email: data.email,
+        timestamp: serverTimestamp(),
+        method: 'email'
       });
 
       // Sign out the user after successful registration

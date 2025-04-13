@@ -53,7 +53,7 @@ const Layout = ({ children }: LayoutProps) => {
     });
 
     return () => unsubscribe();
-  }, [loginModalOpen, signupModalOpen]);
+  }, [loginModalOpen, signupModalOpen, setLocation]););
 
   return (
     <div className="min-h-screen flex flex-col">

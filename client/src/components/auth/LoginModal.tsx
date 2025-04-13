@@ -71,8 +71,13 @@ const LoginModal = ({ onClose, openSignup }: LoginModalProps) => {
       setIsLoading(true);
       const userCredential = await auth.signInWithEmailAndPassword(data.email, data.password);
       
-      // Store login data in Firestore
-      await addDoc(collection(db, 'login'), {
+      // Update user's last login
+      await updateDoc(doc(db, 'users', userCredential.user.uid), {
+        lastLogin: serverTimestamp()
+      });
+
+      // Store login event
+      await addDoc(collection(db, 'login_events'), {
         userId: userCredential.user.uid,
         email: data.email,
         timestamp: serverTimestamp(),
