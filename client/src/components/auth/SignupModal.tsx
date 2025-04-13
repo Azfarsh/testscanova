@@ -66,10 +66,15 @@ const SignupModal = ({ onClose, openLogin }: SignupModalProps) => {
         timestamp: serverTimestamp()
       });
 
+      // Sign out the user after successful registration
+      await auth.signOut();
+
       toast({
-        title: "Account created",
-        description: "Please login to continue",
+        title: "Account created successfully",
+        description: "Please login with your new account",
       });
+      
+      // Close signup modal and open login modal
       onClose();
       openLogin();
     } catch (err: any) {
@@ -77,8 +82,10 @@ const SignupModal = ({ onClose, openLogin }: SignupModalProps) => {
       toast({
         variant: "destructive",
         title: "Signup failed",
-        description: err.message || "Something went wrong",
+        description: err.message || "Please check your details and try again",
       });
+      // Keep the modal open on failure
+      form.reset(data); // Preserve the entered data
     } finally {
       setIsLoading(false);
     }
