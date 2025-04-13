@@ -98,6 +98,7 @@ const services: Service[] = [
 const ServicesSection = () => {
   const { toast } = useToast();
   const [uploading, setUploading] = useState<{ [key: string]: boolean }>({});
+  const [results, setResults] = useState<{ [key: string]: { predicted_class: string; calming_tips: string[] } }>({});
 
   const handleFileUpload = async (serviceId: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -107,19 +108,24 @@ const ServicesSection = () => {
 
     try {
       const formData = new FormData();
-      formData.append('image', files[0]);
+      formData.append("image", files[0]);
 
-      const response = await fetch('http://127.0.0.1:5000/predict', {
-        method: 'POST',
-        body: formData
+      const response = await fetch("http://127.0.0.1:5000/predict", {
+        method: "POST",
+        body: formData,
       });
 
       const data = await response.json();
+
       if (response.ok) {
+        setResults(prev => ({
+          ...prev,
+          [serviceId]: data,
+        }));
+
         toast({
           title: `Prediction: ${data.predicted_class}`,
-          description: data.calming_tips?.join('\n'),
-          variant: "default",
+          description: data.calming_tips?.join("\n"),
         });
       } else {
         toast({
@@ -145,6 +151,7 @@ const ServicesSection = () => {
       <h2 className="text-3xl font-bold mb-10 text-gray-800 text-center">
         Available Services
       </h2>
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {services.map((service) => (
           <div key={service.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all hover:scale-102">
@@ -156,13 +163,10 @@ const ServicesSection = () => {
             </div>
             <p className="text-gray-600 mb-4">{service.description}</p>
             <div className="flex items-center text-sm text-gray-500 mb-4">
-              <i className={`fas fa-${service.input.type === 'file' ? 'file-upload' : 'microphone'} mr-2`}></i>
-              <span>Input Type: {service.input.type === 'file' ? 
-                `Files (${service.input.fileConfig?.accept})` : 
-                'Audio Recording'}</span>
+              <span>Input Type: {service.input.type === "file" ? `Files (${service.input.fileConfig?.accept})` : "Audio Recording"}</span>
             </div>
 
-            {service.input.type === 'file' ? (
+            {service.input.type === "file" ? (
               <div className="space-y-2">
                 <input
                   type="file"
@@ -172,12 +176,12 @@ const ServicesSection = () => {
                   multiple={service.input.fileConfig?.multiple}
                   onChange={(e) => handleFileUpload(service.id, e)}
                 />
-                <Button 
+                <Button
                   className="w-full bg-cyan-500 hover:bg-cyan-600 text-white"
                   onClick={() => document.getElementById(`file-${service.id}`)?.click()}
                   disabled={uploading[service.id]}
                 >
-                  {uploading[service.id] ? 'Uploading...' : 'Start Screening'}
+                  {uploading[service.id] ? "Uploading..." : "Start Screening"}
                 </Button>
               </div>
             ) : (
@@ -186,6 +190,21 @@ const ServicesSection = () => {
                   Start Recording
                 </Button>
               </Link>
+            )}
+
+            {/* Display report if available */}
+            {results[service.id] && (
+              <Card className="mt-4 p-4 border-t border-gray-200">
+                <h4 className="text-lg font-semibold text-gray-800 mb-2">Screening Report</h4>
+                <p className="text-gray-700 mb-2">
+                  <strong>Prediction:</strong> {results[service.id].predicted_class}
+                </p>
+                <ul className="list-disc list-inside text-sm text-gray-600">
+                  {results[service.id].calming_tips.map((tip, index) => (
+                    <li key={index}>{tip}</li>
+                  ))}
+                </ul>
+              </Card>
             )}
           </div>
         ))}
