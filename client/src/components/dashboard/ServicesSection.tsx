@@ -1,8 +1,13 @@
+
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Brain, FileText, Microscope, Stethoscope } from "lucide-react";
 import { Link } from "wouter";
 import { Service } from "@/types/inputs";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/lib/firebase";
 
 const services: Service[] = [
   {
@@ -92,6 +97,38 @@ const services: Service[] = [
 ];
 
 const ServicesSection = () => {
+  const { toast } = useToast();
+  const [uploading, setUploading] = useState<{ [key: string]: boolean }>({});
+
+  const handleFileUpload = async (serviceId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(prev => ({ ...prev, [serviceId]: true }));
+
+    try {
+      for (const file of Array.from(files)) {
+        const storageRef = ref(storage, `input/${serviceId}/${file.name}`);
+        await uploadBytes(storageRef, file);
+      }
+
+      toast({
+        title: "Success",
+        description: "Files uploaded successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload files",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(prev => ({ ...prev, [serviceId]: false }));
+    }
+  };
+
   return (
     <section className="mt-16 px-4 md:px-12 lg:px-20">
       <h2 className="text-3xl font-bold mb-10 text-gray-800 text-center">
@@ -113,11 +150,32 @@ const ServicesSection = () => {
                 `Files (${service.input.fileConfig?.accept})` : 
                 'Audio Recording'}</span>
             </div>
-            <Link href={`/service/${service.id}`}>
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white">
-                Start Screening
-              </Button>
-            </Link>
+            
+            {service.input.type === 'file' ? (
+              <div className="space-y-2">
+                <input
+                  type="file"
+                  id={`file-${service.id}`}
+                  className="hidden"
+                  accept={service.input.fileConfig?.accept}
+                  multiple={service.input.fileConfig?.multiple}
+                  onChange={(e) => handleFileUpload(service.id, e)}
+                />
+                <Button 
+                  className="w-full bg-cyan-500 hover:bg-cyan-600 text-white"
+                  onClick={() => document.getElementById(`file-${service.id}`)?.click()}
+                  disabled={uploading[service.id]}
+                >
+                  {uploading[service.id] ? 'Uploading...' : 'Upload Files'}
+                </Button>
+              </div>
+            ) : (
+              <Link href={`/service/${service.id}`}>
+                <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white">
+                  Start Recording
+                </Button>
+              </Link>
+            )}
           </div>
         ))}
       </div>
