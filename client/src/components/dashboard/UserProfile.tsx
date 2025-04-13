@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { User } from 'firebase/auth';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
@@ -51,6 +51,16 @@ const UserProfile = ({ user }: UserProfileProps) => {
       await updateDoc(doc(db, 'users', user.uid), {
         displayName
       });
+
+      // Store profile update in Firestore
+      await addDoc(collection(db, 'profile_updates'), {
+        userId: user.uid,
+        displayName,
+        timestamp: serverTimestamp(),
+        email: user.email,
+        photoURL: user.photoURL
+      });
+
       setIsEditing(false);
       toast({
         title: "Success",

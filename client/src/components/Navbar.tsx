@@ -84,12 +84,8 @@ const Navbar = ({ toggleMobileMenu, openLoginModal, openSignupModal }: NavbarPro
                   if (!user && link.href !== '/') {
                     e.preventDefault();
                     openLoginModal();
-                  } else if (location.startsWith('/dashboard')) {
-                    // Allow direct navigation when in dashboard
+                  } else {
                     setLocation(link.href);
-                  } else if (link.href !== '/') {
-                    e.preventDefault();
-                    setLocation('/dashboard');
                   }
                 }}
                 className={`text-gray-700 hover:text-cyan-600 transition duration-200 py-2 ${location === link.href ? 'text-cyan-600 font-medium' : ''}`}

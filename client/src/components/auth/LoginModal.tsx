@@ -18,7 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -68,14 +69,19 @@ const LoginModal = ({ onClose, openSignup }: LoginModalProps) => {
   const onSubmit = async (data: FormValues) => {
     try {
       setIsLoading(true);
-
-      // 🔧 Replace this with real Firebase email/password sign-in logic
-      toast({
-        title: 'Login simulated',
-        description: 'You would be logged in here.',
+      await auth.signInWithEmailAndPassword(data.email, data.password);
+      
+      // Store login data in Firestore
+      await addDoc(collection(db, 'logins'), {
+        email: data.email,
+        timestamp: serverTimestamp(),
+        rememberMe: data.rememberMe
       });
 
-      // Modal close & redirect handled in Layout
+      toast({
+        title: 'Login successful',
+        description: 'Welcome back!',
+      });
     } catch (error: any) {
       toast({
         variant: 'destructive',

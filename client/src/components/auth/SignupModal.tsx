@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useauth';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage
 } from '@/components/ui/form';
@@ -53,7 +55,17 @@ const SignupModal = ({ onClose, openLogin }: SignupModalProps) => {
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
     try {
-      await register(data.email, data.password, `${data.firstName} ${data.lastName}`);
+      const userCredential = await register(data.email, data.password, `${data.firstName} ${data.lastName}`);
+      
+      // Store signup data in Firestore
+      await addDoc(collection(db, 'signups'), {
+        userId: userCredential.user.uid,
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        timestamp: serverTimestamp()
+      });
+
       toast({
         title: "Account created",
         description: "Welcome to Scanova!",
