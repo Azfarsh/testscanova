@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Brain, FileText, Microscope, Stethoscope } from "lucide-react";
@@ -47,7 +46,7 @@ const services: Service[] = [
       type: "file",
       fileConfig: {
         accept: "image/jpeg,image/png,image/dicom",
-        multiple: true,
+        multiple: false,
         maxSize: 100
       }
     }
@@ -107,16 +106,28 @@ const ServicesSection = () => {
     setUploading(prev => ({ ...prev, [serviceId]: true }));
 
     try {
-      for (const file of Array.from(files)) {
-        const storageRef = ref(storage, `input/${serviceId}/${file.name}`);
-        await uploadBytes(storageRef, file);
-      }
+      const formData = new FormData();
+      formData.append('image', files[0]);
 
-      toast({
-        title: "Success",
-        description: "Files uploaded successfully",
-        variant: "default",
+      const response = await fetch('http://127.0.0.1:5000/predict', {
+        method: 'POST',
+        body: formData
       });
+
+      const data = await response.json();
+      if (response.ok) {
+        toast({
+          title: `Prediction: ${data.predicted_class}`,
+          description: data.calming_tips?.join('\n'),
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Prediction Error",
+          description: data.error || "Unknown error",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Upload error:", error);
       toast({
@@ -150,7 +161,7 @@ const ServicesSection = () => {
                 `Files (${service.input.fileConfig?.accept})` : 
                 'Audio Recording'}</span>
             </div>
-            
+
             {service.input.type === 'file' ? (
               <div className="space-y-2">
                 <input
@@ -166,7 +177,7 @@ const ServicesSection = () => {
                   onClick={() => document.getElementById(`file-${service.id}`)?.click()}
                   disabled={uploading[service.id]}
                 >
-                  {uploading[service.id] ? 'Uploading...' : 'Upload Files'}
+                  {uploading[service.id] ? 'Uploading...' : 'Start Screening'}
                 </Button>
               </div>
             ) : (

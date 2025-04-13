@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import UserProfile from '@/components/dashboard/UserProfile';
 import { auth } from '@/lib/firebase';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from '@/components/ui/button';
 import Overview from '../components/dashboard/Overview';
 import HealthMetrics from '../components/dashboard/HealthMetrics';
 import ScreeningResults from '../components/dashboard/ScreeningResults';
@@ -78,8 +78,8 @@ const Dashboard = () => {
                           className={`w-full justify-start ${activeTab === 'overview' ? 'text-cyan-600 bg-cyan-50' : 'text-gray-700 hover:text-cyan-600 hover:bg-cyan-50'}`}
                           onClick={() => setActiveTab('overview')}
                         >
-                          <i className="fas fa-home"></i>
-                          <span className={`ml-3 transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>Overview</span>
+                          <i className="fas fa-home mr-3"></i>
+                          <span className={`transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>Overview</span>
                         </Button>
                       </li>
                       <li>
